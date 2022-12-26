@@ -26,7 +26,7 @@ app.get('/dom', (req, res) => {
 
                 // The result can be accessed through the `m`-variable.
                 m.forEach((match, groupIndex) => {
-                    result += match.trim().trimEnd() + ' '
+                    if(groupIndex === 1) result += match.trim().trimEnd() + ' '
                 });
             }
 
