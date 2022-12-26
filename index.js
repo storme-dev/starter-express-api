@@ -29,11 +29,12 @@ app.get('/dom', (req, res) => {
                     result += match.trim().trimEnd() + ' '
                 });
             }
+
+            res.send(result)
         })
 
     })
 
-    res.send(result)
 
     // console.log("Just got a request!")
     // res.send('Yo test!')
