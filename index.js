@@ -30,7 +30,35 @@ app.get('/dom', (req, res) => {
                 });
             }
 
-            res.send(result)
+            output = ''
+
+            https.get('https://kogda.by/routes/minsk/autobus/37/ДС%20Восточная%20-%20ДС%20Карбышева/Гикало', (httpResponse) => {
+
+                httpResponse.on('data', (d) => {
+                    output += d
+                });
+
+                httpResponse.on('end', () => {
+                    const regex = /<span\sclass="future">([^<]*)<\/span>/gm;
+
+                    let m;
+
+                    while ((m = regex.exec(output)) !== null) {
+                        // This is necessary to avoid infinite loops with zero-width matches
+                        if (m.index === regex.lastIndex) {
+                            regex.lastIndex++;
+                        }
+
+                        // The result can be accessed through the `m`-variable.
+                        m.forEach((match, groupIndex) => {
+                            if(groupIndex === 1) result += match.trim().trimEnd() + ' '
+                        });
+                    }
+
+                    res.send(result)
+                })
+
+            })
         })
 
     })
@@ -42,36 +70,6 @@ app.get('/dom', (req, res) => {
 
 app.get('/gikalo', (req, res) => {
 
-    let result = '';
-    let output = '';
-
-    https.get('https://kogda.by/routes/minsk/autobus/37/ДС%20Восточная%20-%20ДС%20Карбышева/Гикало', (httpResponse) => {
-
-        httpResponse.on('data', (d) => {
-            output += d
-        });
-
-        httpResponse.on('end', () => {
-            const regex = /<span\sclass="future">([^<]*)<\/span>/gm;
-
-            let m;
-
-            while ((m = regex.exec(output)) !== null) {
-                // This is necessary to avoid infinite loops with zero-width matches
-                if (m.index === regex.lastIndex) {
-                    regex.lastIndex++;
-                }
-
-                // The result can be accessed through the `m`-variable.
-                m.forEach((match, groupIndex) => {
-                    if(groupIndex === 1) result += match.trim().trimEnd() + ' '
-                });
-            }
-
-            res.send(result)
-        })
-
-    })
 
 
     // console.log("Just got a request!")
